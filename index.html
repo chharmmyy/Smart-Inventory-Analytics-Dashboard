@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Inventory Analytics Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div id="dash">
+
+    <div class="header">
+      <h1>&#128230; Smart Inventory Analytics &mdash; 5,000 Products</h1>
+      <div class="header-mid">
+        <div class="search-wrap">
+          <input type="text" id="searchBox" placeholder="Search product..." oninput="applyFilters()">
+        </div>
+        <select class="cat-select" id="catSelect" onchange="applyFilters()">
+          <option value="">All Categories</option>
+          <option>Electronics</option>
+          <option>Clothing</option>
+          <option>Food</option>
+          <option>Furniture</option>
+          <option>Sports</option>
+          <option>Toys</option>
+          <option>Books</option>
+          <option>Tools</option>
+        </select>
+        <select class="cat-select" id="statusSelect" onchange="applyFilters()">
+          <option value="">All Statuses</option>
+          <option>Normal</option>
+          <option>Low</option>
+          <option>Critical</option>
+          <option>Overstock</option>
+        </select>
+        <span class="filter-label" id="filterLabel">Showing all 5,000 products</span>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">Reset All</button>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <span class="lbl">Total Stock Units</span>
+        <span class="val" id="kTotal">—</span>
+        <span class="sub">across all warehouses</span>
+      </div>
+      <div class="kpi b2">
+        <span class="lbl">Products</span>
+        <span class="val" id="kProducts">—</span>
+        <span class="sub">unique items in view</span>
+      </div>
+      <div class="kpi b3">
+        <span class="lbl">Low / Critical</span>
+        <span class="val" id="kLow">—</span>
+        <span class="sub">need replenishment</span>
+      </div>
+      <div class="kpi b4">
+        <span class="lbl">Overstock</span>
+        <span class="val" id="kOver">—</span>
+        <span class="sub">exceed max level</span>
+      </div>
+      <div class="kpi b5">
+        <span class="lbl">Avg Turnover</span>
+        <span class="val" id="kTurn">—</span>
+        <span class="sub">sales / stock ratio</span>
+      </div>
+    </div>
+
+    <div class="charts">
+
+      <!-- Bar: tall left -->
+      <div class="card tall">
+        <div class="card-title">
+          <span>Stock vs Reorder Level</span>
+          <div class="btn-group">
+            <button class="cbtn active" id="btnBoth" onclick="setBar('both')">Both</button>
+            <button class="cbtn" id="btnStock" onclick="setBar('stock')">Stock</button>
+            <button class="cbtn" id="btnReorder" onclick="setBar('reorder')">Reorder</button>
+            <button class="cbtn" id="btnCrit" onclick="setBar('critical')">Critical</button>
+            <button class="cbtn" id="btnTop10" onclick="setBar('top10')">Top 10</button>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="barChart" role="img" aria-label="Stock vs reorder bar chart">Stock vs reorder levels for
+            products.</canvas>
+        </div>
+      </div>
+
+      <!-- Pie -->
+      <div class="card">
+        <div class="card-title">
+          <span>Category Breakdown</span>
+          <span style="font-size:9px;color:var(--accent)">Click slice to filter</span>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="pieChart" role="img" aria-label="Doughnut chart of stock by category">Stock by category.</canvas>
+        </div>
+        <div class="pie-hint" id="pieHint">Click a slice to filter by category</div>
+      </div>
+
+      <!-- Line -->
+      <div class="card">
+        <div class="card-title">
+          <span>Monthly Sales Trend</span>
+          <div class="btn-group">
+            <button class="cbtn active" id="btnLine" onclick="setLine('line')">Line</button>
+            <button class="cbtn" id="btnArea" onclick="setLine('area')">Area</button>
+            <button class="cbtn" id="btnBar2" onclick="setLine('bar')">Bar</button>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="lineChart" role="img" aria-label="Monthly sales trend chart">Sales over 6 months.</canvas>
+        </div>
+      </div>
+
+      <!-- Low Stock -->
+      <div class="card">
+        <div class="card-title">
+          <span>Low / Critical Stock Alert</span>
+          <div class="btn-group">
+            <button class="cbtn active" id="btnLowAll" onclick="setLowMode('all')">All</button>
+            <button class="cbtn" id="btnLowCrit" onclick="setLowMode('critical')">Critical</button>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="lowChart" role="img" aria-label="Low stock horizontal bar chart">Products below reorder
+            threshold.</canvas>
+        </div>
+      </div>
+
+      <!-- Top Products -->
+      <div class="card">
+        <div class="card-title">
+          <span>Top Products by Sales</span>
+          <div class="btn-group">
+            <button class="cbtn active" id="btnT5" onclick="setTopN(5)">Top 5</button>
+            <button class="cbtn" id="btnT10" onclick="setTopN(10)">Top 10</button>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="topChart" role="img" aria-label="Top products by total sales">Best selling products.</canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script src="./script.js"></script>
+</body>
+
+</html>
